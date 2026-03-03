@@ -2,27 +2,33 @@ name: Safety Beyond Rules - Blogger to LinkedIn
 
 on:
   schedule:
-    - cron: '0 3 * * *'     # Runs daily at ~8:30 AM IST (UTC 3:00 = IST +5:30; adjust if needed)
-  workflow_dispatch:        # Allows manual run from Actions tab
+    - cron: '0 3 * * *'  # Daily ~8:30 AM IST (UTC 3:00); edit for more frequent
+  workflow_dispatch:     # Manual test button
 
 jobs:
-  share-latest-post:
+  post-to-linkedin:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Post latest Blogger article to LinkedIn
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch latest post and share to LinkedIn
         uses: Arisamiga/Linkedin-RSS@master
         with:
           feed_list: 'https://safetybeyondrules.blogspot.com/feeds/posts/default'
           ln_access_token: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
           embed_image: 'true'
           post_message: |
-            New Safety Update: {{title}}
+            New Safety Insight from Blog:
+            {{title}}
 
-            {{description | truncate: 180}}...
+            {{description | truncate: 200}}...
 
-            Full read: {{link}}
+            Read full: {{link}}
 
-            #SafetyBeyondRules #WorkplaceSafety #HSE #SafetyFirst #NearMissReporting
+            #SafetyBeyondRules #WorkplaceSafety #HSE #SafetyFirst #NearMiss
